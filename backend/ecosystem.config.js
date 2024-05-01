@@ -17,8 +17,8 @@ module.exports = {
       ref: DEPLOY_REF,
       repo: DEPLOY_REPO,
       path: DEPLOY_PATH,
-      'pre-deploy-local': `scp .env.deploy ${DEPLOY_USER}@${DEPLOY_HOST}:/home/mishechka/web-plus-pm2-deploy/backend/.env`,
-      'post-deploy': 'cd backend && nvm use 20 && npm i && npm run build && pm2 reload app',
+      'pre-deploy-local': `scp .env.deploy ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/.env`,
+      'post-deploy': 'nvm use 20 && npm i && npm run build && pm2 reload app',
     },
   },
 };
