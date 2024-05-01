@@ -1,7 +1,4 @@
 #!/bin/bash
-
-USER_HOST=$1
-DEPLOY_PATH=$2
-
-# Запускаем скрипт для копирования .env.deploy
-scp $PROJECT_PATH/.env.deploy $USER_HOST:$DEPLOY_PATH/.env.deploy
+SSH_CONFIG="${1}"
+PROJECT_PATH="${2}"
+scp -Cr .env "$SSH_CONFIG:${PROJECT_PATH}/current/backend"
