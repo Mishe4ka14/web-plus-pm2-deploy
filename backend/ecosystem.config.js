@@ -1,7 +1,11 @@
 require('dotenv').config();
 
 const {
-  DEPLOY_USER, DEPLOY_HOST, DEPLOY_PATH, DEPLOY_REF, DEPLOY_REPO = 'origin/master',
+  DEPLOY_USER,
+  DEPLOY_HOST,
+  DEPLOY_PATH,
+  DEPLOY_REF,
+  DEPLOY_REPO = 'origin/master',
 } = process.env;
 
 module.exports = {
@@ -10,7 +14,6 @@ module.exports = {
     script: './dist/app.js',
   }],
 
-  // Настройка деплоя
   deploy: {
     production: {
       user: DEPLOY_USER,
@@ -19,7 +22,7 @@ module.exports = {
       repo: DEPLOY_REPO,
       path: DEPLOY_PATH,
       'pre-deploy': `scp ./*.env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}`,
-      'post-deploy': 'npm i && npm run build',
+      'post-deploy': 'npm i && npm run build && pm2 startOrRestart ecosystem.config.js --env production',
     },
   },
 };
