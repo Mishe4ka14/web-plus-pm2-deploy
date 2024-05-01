@@ -1,15 +1,13 @@
-const dotenv = require('dotenv');
-
-dotenv.config({ path: './.env.deploy' });
+require('dotenv').config({ path: './.env.deploy' });
 
 const {
-  DEPLOY_USER, DEPLOY_HOST, DEPLOY_PATH, DEPLOY_REF, DEPLOY_REPO,
+  DEPLOY_USER, DEPLOY_HOST, DEPLOY_PATH, DEPLOY_REPO, DEPLOY_REF = 'origin/master',
 } = process.env;
 
 module.exports = {
   apps: [{
-    name: 'api-service',
-    script: 'dist/app.js',
+    name: 'app',
+    script: './dist/app.js',
   }],
 
   deploy: {
@@ -19,9 +17,8 @@ module.exports = {
       ref: DEPLOY_REF,
       repo: DEPLOY_REPO,
       path: DEPLOY_PATH,
-      'pre-deploy-local': `scp ${DEPLOY_PATH}/.env.deploy ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/.env`,
-      'post-deploy': 'cd backend && pwd && npm ci && npm run build && pm2 startOrRestart ecosystem.config.js --env production',
-
+      'pre-deploy-local': `scp .env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/backend`,
+      'post-deploy': 'cd backend && nvm use 18 && npm i && npm run build && pm2 reload app',
     },
   },
 };
