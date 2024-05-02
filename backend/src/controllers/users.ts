@@ -11,6 +11,10 @@ import BadRequestError from '../errors/bad-request-error';
 import NotFoundError from '../errors/not-found-error';
 import ConflictError from '../errors/conflict-error';
 
+interface AuthenticatedRequest extends Request {
+  user: { _id: string };
+}
+
 const login = (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
@@ -18,7 +22,6 @@ const login = (req: Request, res: Response, next: NextFunction) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET);
       return res
         .cookie('jwt', token, {
-
           maxAge: 3600000,
           httpOnly: true,
           sameSite: true,
@@ -52,23 +55,24 @@ const createUser = (req: Request, res: Response, next: NextFunction) => {
 const getUserData = (id: string, res: Response, next: NextFunction) => {
   User.findById(id)
     .orFail(() => new NotFoundError('Пользователь по заданному id отсутствует в базе'))
-    .then((users) => res.send(users))
+    .then((user) => res.send(user))
     .catch(next);
 };
 
 const getUser = (req: Request, res: Response, next: NextFunction) => {
-  getUserData(req.params.id, res, next);
+  const authenticatedReq = req as AuthenticatedRequest;
+  getUserData(authenticatedReq.user._id, res, next);
 };
 
 const getCurrentUser = (req: Request, res: Response, next: NextFunction) => {
-  const { _id } = req.user as { _id: string };
-  getUserData(_id, res, next);
+  const authenticatedReq = req as AuthenticatedRequest;
+  getUserData(authenticatedReq.user._id, res, next);
 };
 
 const updateUserData = (req: Request, res: Response, next: NextFunction) => {
-  const { _id } = req.user as { _id: string };
+  const authenticatedReq = req as AuthenticatedRequest;
   const { body } = req;
-  User.findByIdAndUpdate(_id, body, { new: true, runValidators: true })
+  User.findByIdAndUpdate(authenticatedReq.user._id, body, { new: true, runValidators: true })
     .orFail(() => new NotFoundError('Пользователь по заданному id отсутствует в базе'))
     .then((user) => res.send(user))
     .catch(next);
@@ -88,9 +92,9 @@ const updateUserAvatar = (
 
 export {
   login,
-  updateUserInfo,
-  updateUserAvatar,
   createUser,
   getUser,
   getCurrentUser,
+  updateUserInfo,
+  updateUserAvatar,
 };
