@@ -61,12 +61,13 @@ const getUser = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getCurrentUser = (req: Request, res: Response, next: NextFunction) => {
-  getUserData(req.user._id, res, next);
+  const { _id } = req.user as { _id: string };
+  getUserData(_id, res, next);
 };
 
 const updateUserData = (req: Request, res: Response, next: NextFunction) => {
-  // @ts-ignore
-  const { user: { _id }, body } = req;
+  const { _id } = req.user as { _id: string };
+  const { body } = req;
   User.findByIdAndUpdate(_id, body, { new: true, runValidators: true })
     .orFail(() => new NotFoundError('Пользователь по заданному id отсутствует в базе'))
     .then((user) => res.send(user))
