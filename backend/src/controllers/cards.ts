@@ -45,7 +45,8 @@ const deleteCard = (req: AuthenticatedRequest, res: Response, next: NextFunction
     .catch(next);
 };
 
-const updateLike = (req: Request, res: Response, next: NextFunction, method: string) => {
+// eslint-disable-next-line max-len
+const updateLike = (req: AuthenticatedRequest, res: Response, next: NextFunction, method: string) => {
   const { params: { id } } = req;
   Card.findByIdAndUpdate(id, { [method]: { likes: req.user._id } }, { new: true })
     .orFail(() => new NotFoundError('Нет карточки по заданному id'))
