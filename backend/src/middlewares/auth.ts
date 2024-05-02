@@ -4,14 +4,10 @@ import { JWT_SECRET } from '../config';
 import UnauthorizedError from '../errors/unauthorized-error';
 
 interface JwtPayload {
-  _id: string;
+  _id: string
 }
 
-interface AuthenticatedRequest extends Request {
-  user: JwtPayload;
-}
-
-const auth = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+const auth = (req: Request, res: Response, next: NextFunction) => {
   try {
     let token = req.cookies.jwt || req.headers.authorization;
     if (!token) {

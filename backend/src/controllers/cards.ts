@@ -6,17 +6,13 @@ import BadRequestError from '../errors/bad-request-error';
 import NotFoundError from '../errors/not-found-error';
 import ForbiddenError from '../errors/forbidden-error';
 
-interface AuthenticatedRequest extends Request {
-  user: { _id: string };
-}
-
 const getCards = (req: Request, res: Response, next: NextFunction) => {
   Card.find({})
     .then((cards) => res.send(cards))
     .catch(next);
 };
 
-const createCard = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+const createCard = (req: Request, res: Response, next: NextFunction) => {
   const owner = req.user._id;
   const { name, link } = req.body;
   Card.create({ name, link, owner })
@@ -30,7 +26,7 @@ const createCard = (req: AuthenticatedRequest, res: Response, next: NextFunction
     });
 };
 
-const deleteCard = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+const deleteCard = (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
   Card.findById(id)
     .orFail(() => new NotFoundError('Нет карточки по заданному id'))
@@ -45,8 +41,7 @@ const deleteCard = (req: AuthenticatedRequest, res: Response, next: NextFunction
     .catch(next);
 };
 
-// eslint-disable-next-line max-len
-const updateLike = (req: AuthenticatedRequest, res: Response, next: NextFunction, method: string) => {
+const updateLike = (req: Request, res: Response, next: NextFunction, method: string) => {
   const { params: { id } } = req;
   Card.findByIdAndUpdate(id, { [method]: { likes: req.user._id } }, { new: true })
     .orFail(() => new NotFoundError('Нет карточки по заданному id'))
@@ -56,9 +51,9 @@ const updateLike = (req: AuthenticatedRequest, res: Response, next: NextFunction
     .catch(next);
 };
 
-const likeCard = (req: Request, res: Response, next: NextFunction) => updateLike(req as AuthenticatedRequest, res, next, '$addToSet');
+const likeCard = (req: Request, res: Response, next: NextFunction) => updateLike(req, res, next, '$addToSet');
 
-const dislikeCard = (req: Request, res: Response, next: NextFunction) => updateLike(req as AuthenticatedRequest, res, next, '$pull');
+const dislikeCard = (req: Request, res: Response, next: NextFunction) => updateLike(req, res, next, '$pull');
 
 export {
   getCards,
