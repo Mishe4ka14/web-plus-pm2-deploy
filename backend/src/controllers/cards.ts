@@ -56,9 +56,9 @@ const updateLike = (req: AuthenticatedRequest, res: Response, next: NextFunction
     .catch(next);
 };
 
-const likeCard = (req: Request, res: Response, next: NextFunction) => updateLike(req, res, next, '$addToSet');
+const likeCard = (req: Request, res: Response, next: NextFunction) => updateLike(req as AuthenticatedRequest, res, next, '$addToSet');
 
-const dislikeCard = (req: Request, res: Response, next: NextFunction) => updateLike(req, res, next, '$pull');
+const dislikeCard = (req: Request, res: Response, next: NextFunction) => updateLike(req as AuthenticatedRequest, res, next, '$pull');
 
 export {
   getCards,
