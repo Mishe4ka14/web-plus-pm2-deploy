@@ -65,6 +65,7 @@ const getCurrentUser = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const updateUserData = (req: Request, res: Response, next: NextFunction) => {
+  // @ts-ignore
   const { user: { _id }, body } = req;
   User.findByIdAndUpdate(_id, body, { new: true, runValidators: true })
     .orFail(() => new NotFoundError('Пользователь по заданному id отсутствует в базе'))
