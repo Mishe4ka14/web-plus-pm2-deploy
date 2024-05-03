@@ -21,7 +21,7 @@ module.exports = {
       ref: DEPLOY_REF,
       repo: DEPLOY_REPO,
       path: DEPLOY_PATH,
-      'pre-deploy-local': `scp .env.deploy ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/.env`,
+      'pre-deploy-local': `scp ${__dirname}/.env.deploy ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/.env`,
       'post-deploy': 'cd backend && . ~/.nvm/nvm.sh && nvm use && npm i && npm run build && pm2 reload app',
     },
   },
