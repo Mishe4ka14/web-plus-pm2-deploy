@@ -3,12 +3,7 @@ const dotenv = require('dotenv');
 dotenv.config({ path: './.env.deploy' });
 
 const {
-  DEPLOY_USER,
-  DEPLOY_HOST,
-  DEPLOY_PATH,
-  DEPLOY_REF,
-  DEPLOY_REPO_USER_NAME,
-  DEPLOY_REPO_NAME,
+  DEPLOY_USER, DEPLOY_HOST, DEPLOY_PATH, DEPLOY_REF, DEPLOY_REPO,
 } = process.env;
 
 module.exports = {
@@ -24,10 +19,10 @@ module.exports = {
       user: DEPLOY_USER,
       host: DEPLOY_HOST,
       ref: DEPLOY_REF,
-      repo: `https://github.com/${DEPLOY_REPO_USER_NAME}/${DEPLOY_REPO_NAME}.git`,
+      repo: DEPLOY_REPO,
       path: DEPLOY_PATH,
       "post-deploy":
-          `cd ~/web-plus-pm2-deploy/source/frontend/ && npm i && npm run build`,
+          `cd ~/web-plus-pm2-deploy-frontend/source/frontend/ && npm i && npm run build`,
     },
   },
 };
