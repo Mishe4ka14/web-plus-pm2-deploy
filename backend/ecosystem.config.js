@@ -12,7 +12,6 @@ module.exports = {
     script: 'dist/app.js',
   }],
 
-  // Настройка деплоя
   deploy: {
     production: {
       user: DEPLOY_USER,
@@ -21,8 +20,7 @@ module.exports = {
       repo: DEPLOY_REPO,
       path: DEPLOY_PATH,
       'pre-deploy-local': `scp ./.env* ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/source/backend`,
-      'post-deploy': `cd ${DEPLOY_PATH}/source/backend && pwd && npm ci && npm run build && pm2 startOrRestart ecosystem.config.js --env production`,
-
+      'post-deploy': 'cd backend && nvm use 16 && npm i && npm run build && pm2 reload app',
     },
   },
 };
